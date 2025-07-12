@@ -16,29 +16,36 @@
     </button>
   </div>
 
-  <script type="module">
-    import { supabase } from '../js/supabaseClient.js';
+ <script type="module">
+  import { supabase } from '../js/supabaseClient.js';
 
-    async function getUser() {
-      const { data, error } = await supabase.auth.getUser();
-      if (error || !data.user) {
-        Swal.fire("Session expired", "Redirecting to login...", "warning").then(() => {
-          window.location.href = "login.html";
-        });
-      } else {
-        document.getElementById("user-email").textContent = data.user.email;
-        Swal.fire("Success", `Logged in as ${data.user.email}`, "success");
-      }
-    }
-
-    document.getElementById("logout-btn").addEventListener("click", async () => {
-      await supabase.auth.signOut();
-      Swal.fire("Logged out", "See you again soon!", "success").then(() => {
+  async function getUser() {
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user) {
+      Swal.fire("Session expired", "Redirecting to login...", "warning").then(() => {
         window.location.href = "login.html";
       });
-    });
+    } else if (!data.user.email_confirmed_at) {
+      Swal.fire("Email not verified", "Please verify your email first.", "warning").then(() => {
+        window.location.href = "verify.html";
+      });
+    } else {
+      document.getElementById("user-email").textContent = data.user.email;
+      Swal.fire("Success", `Logged in as ${data.user.email}`, "success");
+    }
+  }
 
-    getUser();
-  </script>
+  document.addEventListener("DOMContentLoaded", getUser);
+
+  document.getElementById("logout-btn").addEventListener("click", async () => {
+    await supabase.auth.signOut();
+    Swal.fire("Logged out", "See you again soon!", "success").then(() => {
+      window.location.href = "login.html";
+    });
+  });
+
+  getUser();
+</script>
+
 </body>
 </html>
