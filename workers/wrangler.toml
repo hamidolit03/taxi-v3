@@ -1,0 +1,7 @@
+name = "taxi-v3"
+type = "javascript"
+main = "workers/index.ts"
+account_id = ""
+compatibility_date = "2025-07-12"
+
+# يمكنك إضافة المزيد من الإعدادات مثل متغيرات البيئة أو المسارات حسب الحاجة

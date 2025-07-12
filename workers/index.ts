@@ -6,9 +6,9 @@ import { cors } from "hono/cors";
 const app = new Hono();
 app.use('*', cors());
 
-const SECRET = Deno.env.get("JWT_SECRET")!;
-const FROM_EMAIL = Deno.env.get("FROM_EMAIL")!;
-const DOMAIN = Deno.env.get("APP_DOMAIN")!; // ex: https://example.com/verify.html
+const SECRET = process.env.JWT_SECRET!;
+const FROM_EMAIL = process.env.FROM_EMAIL!;
+const DOMAIN = process.env.APP_DOMAIN!; // ex: https://example.com/verify.html
 
 async function sendEmail(to: string, token: string) {
   const link = `${DOMAIN}/verify.html?token=${token}`;
@@ -16,7 +16,7 @@ async function sendEmail(to: string, token: string) {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${Deno.env.get("RESEND_API_KEY")}`,
+      "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
